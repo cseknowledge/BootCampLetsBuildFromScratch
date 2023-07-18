@@ -1,0 +1,29 @@
+<?php
+
+require_once('CLI.php');
+
+checkArgument($argv);
+
+function checkArgument($argv)
+{
+    $cli = new CLI();
+    if (isset($argv[1])) {
+        $directory = $argv[1];
+        mkdirCommand($directory, $cli);
+    } else {
+        echo $cli->set_color("Usage: php mkdir [directory]", "yellow") . PHP_EOL;
+    }
+}
+
+function mkdirCommand($directory, $cli)
+{
+    if (is_dir($directory)) {
+        echo $cli->set_color("Directory already exists: $directory", "yellow") . PHP_EOL;
+    } else {
+        if (mkdir($directory, 0755, true)) {
+            echo $cli->set_color("Created directory: $directory", "green") . PHP_EOL;
+        } else {
+            echo $cli->set_color("Error creating directory: $directory", "red") . PHP_EOL;
+        }
+    }
+}

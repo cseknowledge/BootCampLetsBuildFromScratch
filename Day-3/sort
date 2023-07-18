@@ -1,0 +1,18 @@
+<?php
+
+require_once('CLI.php');
+
+cat($argv[1]);
+function cat($filename) {
+    $cli = new CLI();
+    if(!file_exists($filename)) {
+        echo $cli->set_color("File not found", "red"). PHP_EOL;
+        return;
+    }
+    $content = file_get_contents($filename);
+    if ($content === false) {
+        echo $cli->set_color("Unable to read file: " . $filename, "red");
+    } else {
+        echo $content;
+    }
+}

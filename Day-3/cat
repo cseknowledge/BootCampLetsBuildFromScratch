@@ -1,0 +1,92 @@
+<?php
+
+require_once('CLI.php');
+
+
+// cat($argv[1]);
+// function cat($filename) {
+//     $cli = new CLI();
+//     if(!file_exists($filename)) {
+//         echo $cli->set_color("File not found", "red"). PHP_EOL;
+//         return;
+//     }
+//     $content = file_get_contents($filename);
+//     if ($content === false) {
+//         echo $cli->set_color("Unable to read file: " . $filename, "red");
+//     } else {
+//         echo $content;
+//     }
+// }
+
+// echo $argc.PHP_EOL;
+// print_r($argv).PHP_EOL;
+
+// // php cat example.txt "This is the content of the file."
+
+// function catCreateFile($filename, $content) {
+//     $result = file_put_contents($filename, $content);
+//     if ($result !== false) {
+//         echo "File created successfully: " . $filename;
+//     } else {
+//         echo "Unable to create file: " . $filename;
+//     }
+// }
+// // Usage example
+// if (isset($argv[1]) && isset($argv[2])) {
+//     $filename = $argv[1];
+//     $content = $argv[2];
+//     catCreateFile($filename, $content);
+// } else {
+//     echo "Usage: php cat [$argv[1]] [$argv[2]]";
+// }
+
+// // php cat cat-1.txt cat-2.txt
+// function catCombineFiles($outputFile, $inputFiles) {
+//     $combinedContent = '';
+//     foreach ($inputFiles as $file) {
+//         $content = file_get_contents($file);
+//         if ($content === false) {
+//             echo "Unable to read file: " . $file . "\n";
+//         } else {
+//             echo "$content ".PHP_EOL;
+//             $combinedContent .= $content;
+//         }
+//     }
+
+//     $result = file_put_contents($outputFile, $combinedContent);
+//     if ($result !== false) {
+//         echo "Files combined successfully into: " . $outputFile;
+//     } else {
+//         echo "Unable to create output file: " . $outputFile;
+//     }
+// }
+
+// // Usage example
+// if (isset($argv[1]) && isset($argv[2])) {
+//     $outputFile = $argv[1];
+//     $inputFiles = array_slice($argv, 1);
+//     catCombineFiles($outputFile, $inputFiles);
+// } else {
+//     echo "Usage: php script.php [outputFile] [inputFiles...]\n";
+// }
+
+//  // php cat example.txt "Additional data to append."
+// function catAppendToFile($filename, $content) {
+//     $result = file_put_contents($filename, $content, FILE_APPEND);
+//     if ($result !== false) {
+//         echo "Data appended successfully to: " . $filename;
+//     } else {
+//         echo "Unable to append data to file: " . $filename;
+//     }
+// }
+
+// // Usage example
+// if (isset($argv[1]) && isset($argv[2])) {
+//     $filename = $argv[1];
+//     $content = $argv[2];
+//     catAppendToFile($filename, $content);
+// } else {
+//     echo "Usage: php script.php [filename] [content]";
+// }
+
+// // 

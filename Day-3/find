@@ -1,0 +1,25 @@
+<?php
+function find($directory)
+{
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($directory),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+    
+    foreach ($iterator as $item) {
+        $path = $item->getPathname();
+
+        if ($item->isDir()) {
+            echo "[DIR] $path" . PHP_EOL;
+        } else {
+            echo "[FILE] $path" . PHP_EOL;
+        }
+    }
+}
+
+if (isset($argv[1])) {
+    $directory = $argv[1];
+    find($directory);
+} else {
+    echo "Usage: php find [directory]" . PHP_EOL;
+}

@@ -1,0 +1,7 @@
+<?php
+
+require_once('CLI.php');
+
+$cli = new CLI();
+
+echo $cli->set_color("Current location: ".getcwd(), "magenta").PHP_EOL;

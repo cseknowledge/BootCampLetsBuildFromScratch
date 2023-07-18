@@ -1,0 +1,5 @@
+<?php
+
+require_once('CLI.php');
+
+echo in_array('|', $argv);

@@ -1,0 +1,130 @@
+#!/usr/bin/env php
+<?php
+
+require_once('CLI.php');
+
+
+checkArgument($argv);
+function checkArgument($argv) {
+    $cli = new CLI();
+    $availableArguments =  ['-a', '-l', '-r', '-ltr', '-t'];
+    if('ls' != $argv[0]) {
+        echo $cli->set_color("Command not found", 'red'). PHP_EOL;
+        return;
+    }
+
+    if(isset($argv[1]) && !in_array(trim($argv[1]), $availableArguments)) {
+        echo $cli->set_color("Command's argument not found", "red"). PHP_EOL;
+        return;
+    }
+
+    getDirectory(getcwd(), $argv, $cli);
+}
+
+function getDirectory($location, $argv, $cli) {
+    if (!is_dir($location)) {
+        echo "Directory does not exist.";
+        return;
+    }
+
+    $items = scandir($location, SCANDIR_SORT_DESCENDING);
+
+    if($argv[0] == 'ls' && !isset($argv[1])) {
+        echo PHP_EOL.$cli->set_color("\e[48;5;42m ls -r list all files \e[49m", "red").PHP_EOL;
+        lsr($items, $cli);
+    } else if($argv[1] == '-a') {
+        echo PHP_EOL.$cli->set_color("\e[48;5;42m ls -a list all files including hidden file starting with '.' \e[49m", "red").PHP_EOL;
+        lsa($items, $cli);
+    } else if($argv[1] == '-r') {
+        echo PHP_EOL.$cli->set_color("\e[48;5;42m ls -r list in reverse order \e[49m", "red").PHP_EOL;
+        lsr(array_reverse($items), $cli);
+    } else if($argv[1] == '-t') {
+        echo PHP_EOL.$cli->set_color("\e[48;5;42m ls -t sort by time & date \e[49m", "red").PHP_EOL;
+        foreach ($items as $item) {
+            $itemList[filemtime($item)] = $item;
+        }
+        ksort($itemList);
+        $itemList = array_reverse($itemList, TRUE);
+        lsr($itemList, $cli);
+    } else if($argv[1] == '-l') {
+        echo PHP_EOL.$cli->set_color("\e[48;5;42m ls -l list with long format - show permissions \e[49m", "red").PHP_EOL;
+        usort($items, function($a, $b) use ($location) {
+            $pathA = $location . '/' . $a;
+            $pathB = $location . '/' . $b;
+            $mtimeA = filemtime($pathA);
+            $mtimeB = filemtime($pathB);
+            return $mtimeB - $mtimeA;
+        });
+        lsl($location, $items, $cli);
+    } else if($argv[1] == '-ltr') {
+        echo PHP_EOL.$cli->set_color("\e[48;5;42m ls -ltr View Reverse Output Order by Date \e[49m", "red").PHP_EOL;
+        usort($items, function($a, $b) use ($location) {
+            $pathA = $location . '/' . $a;
+            $pathB = $location . '/' . $b;
+            $mtimeA = filemtime($pathA);
+            $mtimeB = filemtime($pathB);
+            return $mtimeA - $mtimeB;
+        });
+        lsl($location, $items, $cli);
+    }
+    echo PHP_EOL;
+}
+function lsr($items, $cli) {
+    $items = array_diff($items, array('.', '..'));
+    foreach ($items as $item) {
+        echo itemDesign($item, $cli);
+    }
+}
+function lsa($items, $cli) {
+    foreach ($items as $item) {
+        echo itemDesign($item, $cli);
+    }
+}
+function lsl($location, $items, $cli) {
+    $items = array_diff($items, array('.', '..'));
+
+    echo "total ".count($items).PHP_EOL;
+
+    foreach ($items as $item) {
+        $path = $location . '/' . $item;
+        $permissions = format_permissions(fileperms($path));
+        $size = filesize($path);
+        $modified = date("M d Y H:i", filemtime($path));
+        $filestat = stat($path);
+
+        // Output the information
+        if($item == '.' || $item == '..' ){
+            echo 'd'.$permissions . ' ' . $filestat['nlink']. ' ' . $size . ' ' . $modified . ' ' .$cli->set_color($item, 'cyan') .'/'. PHP_EOL;
+        } else if(is_dir($item)) {
+            echo 'd'.$permissions . ' ' . $filestat['nlink']. ' ' . $size . ' ' . $modified . ' ' .$cli->set_color($item, 'blue') .'/'. PHP_EOL;
+        } else if(is_file($item) && str_contains($item, '.')) {
+            echo '-'.$permissions . ' ' . $filestat['nlink']. ' ' . $size . ' ' . $modified . ' ' .$cli->set_color($item, 'yellow') . PHP_EOL;
+        } else {
+            echo '-'.$permissions . ' ' . $filestat['nlink']. ' ' . $size . ' ' . $modified . ' ' .$cli->set_color($item, 'light green').$cli->set_color('*', 'white') . PHP_EOL;
+        }
+    }
+}
+function format_permissions($permissions) {
+    $perms = '';
+    $perms .= ($permissions & 0x0100) ? 'r' : '-';
+    $perms .= ($permissions & 0x0080) ? 'w' : '-';
+    $perms .= ($permissions & 0x0040) ? 'x' : '-';
+    $perms .= ($permissions & 0x0020) ? 'r' : '-';
+    $perms .= ($permissions & 0x0010) ? 'w' : '-';
+    $perms .= ($permissions & 0x0008) ? 'x' : '-';
+    $perms .= ($permissions & 0x0004) ? 'r' : '-';
+    $perms .= ($permissions & 0x0002) ? 'w' : '-';
+    $perms .= ($permissions & 0x0001) ? 'x' : '-';
+    return $perms;
+}
+function itemDesign($item, $cli) {
+    if($item == '.' || $item == '..' ){
+        return $cli->set_color($item, 'cyan') . "/ \t";
+    } else if(is_dir($item)) {
+        return $cli->set_color($item, 'blue') . "/ \t";
+    } else if(is_file($item) && str_contains($item, '.')) {
+        return $cli->set_color($item, 'yellow') . "\t";
+    } else {
+        return $cli->set_color($item, 'light green').$cli->set_color('*', 'white') . "\t";;
+    }
+}
