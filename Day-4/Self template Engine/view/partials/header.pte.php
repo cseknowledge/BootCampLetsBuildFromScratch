@@ -1,0 +1,1 @@
+<label><h1>This is Header from partials</h1></label>

@@ -11,7 +11,7 @@ while (strtolower($input) !== 'exit') {
     array_push($history, $input);
 
     $inputs = explode(" ", $input);
-    if(!in_array(trim($inputs[0]), $availableCommands)) {
+    if(!in_array(trim($inputs[0]), $availableCommands) && strtolower($input) !== 'exit') {
         echo "Command not found". PHP_EOL;
     }
     executeShellCommand($input);

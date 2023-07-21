@@ -18,6 +18,10 @@ while (true) {
         $input .= "\n" . $nextLine;
     }
 
+    if (!str_ends_with($input, ';')) {
+        $input = $input . ";";
+    }
+
     if(substr($input, 0, 4) === 'echo' || substr($input, 0, 7) === 'print_r') {
         echo "> ";
         eval($input);
