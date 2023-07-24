@@ -1,0 +1,7 @@
+<?php
+
+// $string = "(11+10)*3+2";
+$string = "3 + 5 * ( 2 ^ 8 ) / 4";
+$math_string ="print (".$string.");";
+$result = eval($math_string);
+echo $result;
